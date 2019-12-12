@@ -153,11 +153,10 @@
               <div class="box-header" style="background-color:     #5c8a8a">
                 <h3 class="box-title" style="color:white">Tambah Manual</h3>
               </div>
-              <form id="formmapel" class="form-horizontal" method="post" action="<?php echo site_url('kurikulum/simpannamamapel'); ?>" style="padding: 1em;">
+              <form id="formmapel" class="form-horizontal" method="post" action="<?php echo site_url('kurikulum/simpannamamapelmanualkeotomatis'); ?>" style="padding: 1em;">
                 <input type="hidden" name="id_namamapel" id="id_namamapel"  value="<?php echo @$edit_mapel->id_namamapel; ?>"/>
                 <p style="color: #ff0000"> > Isi <b>Nama Mata Pelajaran</b> dengan <b>Mata Pelajaran</b> yang ada di sekolah.<br>
-                  > <b>Pilih Warna</b> adalah untuk memberi warna agar berbeda pada setiap mata pelajaran (berguna pada Jadwal Mapel)
-
+                  <!-- > <b>Pilih Warna</b> adalah untuk memberi warna agar berbeda pada setiap mata pelajaran (berguna pada Jadwal Mapel) -->
                 </p>
 
 
@@ -170,7 +169,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group formgrup jarakform">
+                    <!-- <div class="form-group formgrup jarakform">
                       <label for="inputKurikulum" class="col-sm-2 control-label">Pilih Warna</label>
                       <div class="col-sm-4">
                         <select type="text" class="form-control" id="warna" name="warna" placeholder="Warna" value=" style="width: 120px;">
@@ -191,7 +190,7 @@
                               
                         </select>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
 

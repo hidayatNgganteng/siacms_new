@@ -2348,6 +2348,26 @@ public function updatepassword() {
 		redirect('kurikulum/namamapel');
 	}
 
+	public function simpannamamapelmanualkeotomatis()
+	{
+		$data['nama'] = $this->session->Nama;
+		$data['foto'] = $this->session->foto; 
+		$this->load->model('penjadwalan/mod_mapel_default');
+		
+		$post_nama = $this->input->post('nama');
+
+		$data = array('nama_mapel' => $post_nama);
+
+		if ($post_nama == "") {
+			$this->session->set_flashdata("warning",'<script> swal( "Nama mapel tidak boleh kosong" ,  "Data tidak tersimpan !" ,  "error" )</script>');
+			redirect('kurikulum/namamapel');
+		} else {
+			$this->mod_mapel_default->insert($data);
+			$this->session->set_flashdata("warning",'<script> swal( "Berhasil" ,  "Data tersimpan !" ,  "success" )</script>');
+			redirect('kurikulum/namamapel');
+		}	
+	}
+
 	public function hapusnamamapel() {
 		$data['nama'] = $this->session->Nama;
 		$data['foto'] = $this->session->foto; 

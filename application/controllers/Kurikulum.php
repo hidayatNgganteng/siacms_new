@@ -1106,6 +1106,24 @@ public function updatepassword() {
 		redirect('kurikulum/harirentang');
 	}
 
+	public function editharirentangjadwal($hari, $idjamrentang, $idthajaran)
+	{
+		$data['nama'] = $this->session->Nama;
+		$data['foto'] = $this->session->foto; 
+		$jammulai = $this->input->post('jammulaieditjadwal');
+		$jamselesai = $this->input->post('jamselesaieditjadwal');
+
+		$this->load->model('penjadwalan/mod_harirentang');
+		$data = array(
+			'jam_mulai' => $this->input->post('jammulaieditjadwal'),
+			'jam_selesai' => $this->input->post('jamselesaieditjadwal')
+		);
+	
+		$this->mod_harirentang->editharirentangjadwal($hari, $idjamrentang, $idthajaran, $data);
+		
+		redirect('kurikulum/harirentang');
+	}
+
 	public function jammengajar()
 	{
 		$data['nama'] = $this->session->Nama;

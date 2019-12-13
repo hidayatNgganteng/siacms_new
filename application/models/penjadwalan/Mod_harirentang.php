@@ -40,4 +40,11 @@ class Mod_harirentang extends CI_Model {
 		$this->db->where($array); 
 		return $this->db->get('hari_rentang')->result();
 	}
+
+	public function editharirentangjadwal($hari, $idjamrentang, $idthajaran, $data){
+		$array = array('hari' => $hari, 'id_rentang_jam' => $idjamrentang, 'id_tahun_ajaran' => $idthajaran);
+
+		$this->db->where($array); 
+		$this->db->update('hari_rentang', $data);
+	}
 }

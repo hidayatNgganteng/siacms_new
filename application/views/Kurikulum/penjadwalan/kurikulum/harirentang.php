@@ -495,8 +495,12 @@
                                   <?php echo @$hari_rentang['senin'][$i]->jam_selesai; ?>
                                 </td>
                                 <td>
-                                  <a href="#tabsenin" data-toggle="tab" class="btn btn-success" size="2">Edit</a>
-                                  <a href="<?php echo site_url('kurikulum/delharirentang/'.@$hari_rentang['senin'][$i]->id_rentang_jam.'/7'); ?>" class="btn btn-danger" size="2">Hapus</a>
+                                  <?php
+                                    if (isset($hari_rentang['senin'][$i])) { ?>
+                                      <a href="#" data-toggle="tab" class="btn btn-success editharirentangtrigger" data-hari="senin" data-idjamrentang="<?php echo $hari_rentang['senin'][$i]->id_rentang_jam ?>" data-idthajaran="<?php echo $hari_rentang['senin'][$i]->id_tahun_ajaran ?>" data-jammulai="<?php echo $hari_rentang['senin'][$i]->jam_mulai ?>" data-jamselesai="<?php echo $hari_rentang['senin'][$i]->jam_selesai ?>"  size="2">Edit</a>
+                                      <a href="<?php echo site_url('kurikulum/delharirentang/'.@$hari_rentang['senin'][$i]->id_rentang_jam.'/7'); ?>" class="btn btn-danger" size="2">Hapus</a> <?php
+                                    }
+                                  ?>
                                 </td>
                               </tr>
                               <?php
@@ -1354,6 +1358,32 @@
     </section>
     <!-- /.content -->
   </div>
+
+  <div class="modal fade modal-harirentang" id="editharirentangmodal" tabindex="-1" role="dialog" aria-labelledby="editharirentangmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-harirentang" role="document">
+      <form method="post" action="#" id="formeditjadwal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Edit Jadwal</h5>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="jammulaieditjadwal">Jam mulai:</label>
+              <input type="time" class="form-control" name="jammulaieditjadwal" id="jammulaieditjadwal">
+            </div>
+            <div class="form-group">
+              <label for="jamselesaieditjadwal">Jam selesai:</label>
+              <input type="time" class="form-control" name="jamselesaieditjadwal" id="jamselesaieditjadwal">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     $(document).ready(function() {
       $(".tab_loc").click(function() {
@@ -1465,6 +1495,21 @@
           }
         }
       });
+
+      $(".editharirentangtrigger").click(function(e) {
+        e.preventDefault()
+        var hari = $(this).data('hari')
+        var idjamrentang = $(this).data('idjamrentang')
+        var idthajaran = $(this).data('idthajaran')
+        var jammulai = $(this).data('jammulai')
+        var jamselesai = $(this).data('jamselesai')
+        var base_url = `<?php echo site_url('kurikulum/editharirentangjadwal'); ?>/${hari}/${idjamrentang}/${idthajaran}`
+
+        $("#jammulaieditjadwal").val(jammulai)
+        $("#jamselesaieditjadwal").val(jamselesai)
+        $("#formeditjadwal").attr('action', base_url)
+        $("#editharirentangmodal").modal('show')
+      })
 
     })
   </script>

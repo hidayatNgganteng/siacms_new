@@ -21,12 +21,29 @@
         <div class="col-md-12">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="<?php echo $this->session->flashdata('tab_loc') == null ? 'active' : '' ?>"><a href="#jammengajar" data-toggle="tab">Kelola Jam Mengajar Guru</a></li>
-              <li class="<?php echo $this->session->flashdata('tab_loc') == 2 ? 'active' : '' ?>"><a href="#kelolajammengajar" data-toggle="tab" alt="test kursor">Data Jam Mengajar</a></li>
+              <li  class="<?php echo $this->session->flashdata('tab_loc') == null ? 'active' : '' ?>"><a href="#pengaturan" data-toggle="tab" alt="test kursor">Pengaturan</a></li>
+              <li class="<?php echo $this->session->flashdata('tab_loc') == 2 ? 'active' : '' ?>"><a href="#jammengajar" data-toggle="tab">Kelola Jam Mengajar Guru</a></li>
+              <li class="<?php echo $this->session->flashdata('tab_loc') == 3 ? 'active' : '' ?>"><a href="#kelolajammengajar" data-toggle="tab" alt="test kursor">Data Jam Mengajar</a></li>
             </ul>
 
             <div class="tab-content">
-              <div class="tab-pane <?php echo $this->session->flashdata('tab_loc') == null ? 'active' : '' ?>" id="jammengajar">
+              <div class="tab-pane <?php echo $this->session->flashdata('tab_loc') == null || $this->session->flashdata('tab_loc') == 1 ? 'active' : '' ?>" href="#tabpengaturan" id="pengaturan">
+                <h4><center><b>Pengaturan Data</b></center></h4>
+                <h5><center><b>Pilihlah Data Untuk Menampilkan Data Jam Mengajar</b></center></h5><br>
+                <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" action="<?php echo site_url('kurikulum/savepengaturanjammengajar'); ?>">  
+                <?php
+                  foreach ($tabel_pengaturan_jam_mengajar as $tabel) { ?>
+                    <input type="checkbox" class="flat" name="nilai<?php echo $tabel->id_pengaturan_jam_mengajar; ?>" value="1" <?php if ($tabel->status == "1") { echo " checked"; } ?>>
+                    <label><?php echo $tabel->nama; ?></label><br> <?php 
+                  } ?>
+                  <br>
+                  <div class="modal-footer" align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Reset</button>
+                    <button type="Save" class="btn btn-success" onclick="return cek();">Aktifkan Data</button>
+                  </div>    
+              </div>
+
+              <div class="tab-pane <?php echo $this->session->flashdata('tab_loc') == 2 ? 'active' : '' ?>" id="jammengajar">
                 <div class="box formmapel">
                   <form class="form-horizontal form_head" action="/action_page.php">
                     <div class="form-group">
@@ -140,7 +157,7 @@
 
                   <!-- /.tab-pane -->
                   <div> <?php echo $this->session->flashdata('warning') ?></div>
-                  <div class="tab-pane <?php echo $this->session->flashdata('tab_loc') == 2 ? 'active' : '' ?>" id="kelolajammengajar">
+                  <div class="tab-pane <?php echo $this->session->flashdata('tab_loc') == 3 ? 'active' : '' ?>" id="kelolajammengajar">
                     <div class="box formmapel" style="padding: 1.5em;">
 
                       <!-- /.box-header -->
@@ -151,18 +168,14 @@
                           <table id="example1" class="table table-bordered table-striped">
                             <thead>
                               <tr>
-                                <th >No.</th>
-                                <th >Nama</th>
-                                <th >NIP</th>
-                                <!-- <th >Kode Guru</th> -->
-                                <th >Golongan</th>
-                                <th >Jabatan</th>
-                                <th >Ijazah</th>
-                                <th >Mata pelajaran</th>
-                                <th >Jam Mengajar per Minggu</th>
-                                <!-- <th ><center>Jumlah jam</center></th> -->
+                                <th>No.</th>
+                                <?php
+                                foreach ($tabel_pengaturan_jam_mengajar as $row_jammengajar) {
+                                  if ($row_jammengajar->status == 1) { ?>
+                                    <th><?php echo $row_jammengajar->nama ?></th><?php
+                                  }
+                                } ?>
                                 <th >Action</th>
-
                               </tr>
                             </thead>
                             <tbody>
@@ -173,15 +186,40 @@
                                 ?>
                                 <tr>
                                   <td><?php echo $i; ?></td>
-                                  <td><?php echo $row_jammengajar->Nama; ?></td>
-                                  <td><?php echo $row_jammengajar->NIP; ?></td>
-                                  <!-- <td><?php echo $row_jammengajar->kode_guru; ?></td> -->
-                                  <td><?php echo $row_jammengajar->Golongan; ?></td>
-                                  <td><?php echo $row_jammengajar->pangkat; ?></td>
-                                  <td><?php echo $row_jammengajar->Pendidikan; ?></td>
-                                  <td><?php echo $row_jammengajar->nama_mapel; ?></td>
-                                  <td><?php echo $row_jammengajar->jatah_minim_mgjr; ?></td>
-                                  <!-- <td><?php echo substr($total_durasi[$row_jammengajar->id_jam_mgjr], 0, 5); ?></td> -->
+
+                                  <?php
+                                  $no = 1;
+                                  foreach ($tabel_pengaturan_jam_mengajar as $row_pengaturan) {
+                                    if ($row_pengaturan->status == 1) {
+                                      switch ($no) {
+                                        case 1: ?>
+                                          <td><?php echo $row_jammengajar->Nama; ?></td><?php
+                                          break;
+                                        case 2: ?>
+                                          <td><?php echo $row_jammengajar->NIP; ?></td><?php
+                                          break;
+                                        case 3: ?>
+                                          <td><?php echo $row_jammengajar->Golongan; ?></td><?php
+                                          break;
+                                        case 4: ?>
+                                          <td><?php echo $row_jammengajar->pangkat; ?></td><?php
+                                          break;
+                                        case 5: ?>
+                                          <td><?php echo $row_jammengajar->Pendidikan; ?></td><?php
+                                          break;
+                                        case 6: ?>
+                                          <td><?php echo $row_jammengajar->nama_mapel; ?></td><?php
+                                          break;
+                                        case 7: ?>
+                                          <td><?php echo $row_jammengajar->jatah_minim_mgjr; ?></td><?php
+                                          break;
+                                        default:
+                                            null;
+                                      }
+                                    }
+                                    $no++;
+                                  } ?>
+                                  
                                   <td>
                                     <button
                                       class="btn btn-danger btn-dark-blue edit_jam_mengajar_trigger"
@@ -193,6 +231,8 @@
                                     </button>
                                     <a onclick="return confirm('Apakah Anda yakin?')" href="<?php echo site_url('kurikulum/hapusjammengajar/'.$row_jammengajar->id_jam_mgjr); ?>" class="btn btn-danger">Hapus</a>
                                   </td>
+
+
 
                                 </tr>
                                 <?php

@@ -14,6 +14,7 @@ class Kurikulum extends CI_Controller {
 		$this->load->model('penilaian/M_data');
 		$this->load->model('penjadwalan/Mod_pengaturan_hari');
 		$this->load->model('penjadwalan/Mod_pengaturan_hari_jadwal_piket_guru');
+		$this->load->model('penjadwalan/Mod_pengaturan_jam_mengajar');
 		// $this->load->model('ppdb/model_pendaftar_ppdb');
 		// $this->load->model('ppdb/model_form_ppdb');
 		// $this->load->model('ppdb/model_ketentuan_ppdb');
@@ -1137,7 +1138,9 @@ public function updatepassword() {
 		$tabel_jammengajar = $this->mod_jammengajar->get(array("id_tahun_ajaran"=>$id_tahun_ajaran));
 		$data['tabel_jammengajar'] = $tabel_jammengajar;
 
-		
+		$this->load->model('penjadwalan/Mod_pengaturan_jam_mengajar');
+		$data['tabel_pengaturan_jam_mengajar'] = $this->Mod_pengaturan_jam_mengajar->get();
+
 		$this->load->model('penjadwalan/mod_pegawai');
 		$tabel_pegawai = $this->mod_pegawai->get(array("Status"=>"Guru"));
 		$data['tabel_pegawai'] = $tabel_pegawai;
@@ -3461,6 +3464,29 @@ public function importpresensi(){
 					  //$this->session->set_flashdata('aktif', "<script>alert(' berhasil diaktifkan!');</script>");
 					  redirect('kurikulum/jadwalpiketguru');
 						}
+
+		public function savepengaturanjammengajar() {
+			$this->load->model('kurikulum/Mod_pengaturan_jam_mengajar');
+
+			foreach ($this->db->get('pengaturan_jam_mengajar')->result() as $tabel) { 
+					
+				if ($this->input->post('nilai'.$tabel->id_pengaturan_jam_mengajar) == "1") {
+					$nilai = 1;
+				}  else { 
+					$nilai = 0; 
+				}
+
+				$arrdata = array(
+					'status' => $nilai
+				);
+		
+				$this->load->model('kurikulum/Mod_pengaturan_jam_mengajar');
+				$this->Mod_pengaturan_jam_mengajar->update($arrdata, $tabel->id_pengaturan_jam_mengajar);
+				$i++;
+			}
+
+			redirect('kurikulum/jammengajar');
+		}
   }
 
   

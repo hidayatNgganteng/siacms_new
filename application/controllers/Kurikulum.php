@@ -13,6 +13,7 @@ class Kurikulum extends CI_Controller {
 		$this->load->model('jabatan_model');
 		$this->load->model('penilaian/M_data');
 		$this->load->model('penjadwalan/Mod_pengaturan_hari');
+		$this->load->model('penjadwalan/Mod_pengaturan_hari_jadwal_piket_guru');
 		// $this->load->model('ppdb/model_pendaftar_ppdb');
 		// $this->load->model('ppdb/model_form_ppdb');
 		// $this->load->model('ppdb/model_ketentuan_ppdb');
@@ -1950,6 +1951,62 @@ public function updatepassword() {
 		$this->load->model('penjadwalan/mod_tahunajaran');
 		$data['tabel_tahunajaran'] = $this->mod_tahunajaran->get();
 
+
+
+		$this->load->model('penjadwalan/Mod_pengaturan_hari_jadwal_piket_guru');
+		$data['tabel_pengaturan_hari'] = $this->Mod_pengaturan_hari_jadwal_piket_guru->get();
+
+		// foreach ($this->db->get('pengaturan_hari')->result() as $tabel) 
+		// { 
+		// 	$settinghari[$tabel->nama_hari] = $tabel->nilai;
+		// 	$settinghariberkas[$tabel->nama_hari] = $tabel->atribut;
+		// }
+		// $data['settinghari'] = $settinghari;
+		// $data['settinghariberkas'] = $settinghariberkas;
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Senin","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['senin'][$i] = $result[$i-1]; }
+		// }
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Selasa","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['selasa'][$i] = $result[$i-1]; }
+		// }
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Rabu","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['rabu'][$i] = $result[$i-1]; }
+		// }
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Kamis","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['kamis'][$i] = $result[$i-1]; }
+		// }
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Jumat","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['jumat'][$i] = $result[$i-1]; }
+		// }
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Sabtu","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['sabtu'][$i] = $result[$i-1]; }
+		// }
+
+		// $result = $this->mod_harirentang->get(array("hari"=>"Minggu","id_tahun_ajaran"=>$id_tahun_ajaran));
+		// for ($i=1; $i<=12; $i++) {
+		// 	if (@$result[$i-1]) { $hari_rentang['minggu'][$i] = $result[$i-1]; }
+		// }
+
+
+
+		// $data['hari_rentang'] = @$hari_rentang;
+
+
+
+
+
 		$data['tabel_jadwalpiketguru_senin'] = $this->mod_jadwalpiketguru->get(array("hari"=>"Senin","id_tahun_ajaran"=>$id_tahun_ajaran));
 		$data['tabel_jadwalpiketguru_selasa'] = $this->mod_jadwalpiketguru->get(array("hari"=>"Selasa","id_tahun_ajaran"=>$id_tahun_ajaran));
 		$data['tabel_jadwalpiketguru_rabu'] = $this->mod_jadwalpiketguru->get(array("hari"=>"Rabu","id_tahun_ajaran"=>$id_tahun_ajaran));
@@ -3351,5 +3408,60 @@ public function importpresensi(){
 		  //$this->session->set_flashdata('aktif', "<script>alert(' berhasil diaktifkan!');</script>");
 		  redirect('kurikulum/harirentang');
 			}
+
+			public function savepengaturanjadwalpiketguru() {
+				$this->load->model('kurikulum/Mod_pengaturan_hari_jadwal_piket_guru');
+					  $i=1;
+					  foreach ($this->db->get('pengaturan_hari_jadwal_piket_guru')->result() as $tabel) 
+					   { 
+						   if ($i>=11)
+						   { //input text dari admin
+							   if ($this->input->post('nilai'.$tabel->id_pengaturan) == "1") 
+							   {
+								   $nilai = 1;
+								   $atribut = $this->input->post('atribut'.$tabel->id_pengaturan);
+							   } 
+							   else 
+							   { 
+								   $nilai = 0; 
+								   $atribut = "";
+							   }
+			  
+							   $arrdata = array
+							   (
+								  'nilai' => $nilai,
+								  'atribut' => $atribut
+			  
+							  );
+						  } else {
+							  if ($this->input->post('nilai'.$tabel->id_pengaturan) == "1") 
+							   {
+								   $nilai = 1;
+							   } 
+							   else 
+							   { 
+								   $nilai = 0; 
+							   }
+			  
+							   $arrdata = array
+							   (
+								  'nilai' => $nilai
+							  );
+							  if ($this->input->post('atribut'.$tabel->id_pengaturan) != "") 
+							  {
+								  $arrdata['atribut'] = $this->input->post('atribut'.$tabel->id_pengaturan); 
+							  }
+							  
+						  }
+			  
+						  $this->load->model('kurikulum/Mod_pengaturan_hari_jadwal_piket_guru');
+						  $this->Mod_pengaturan_hari_jadwal_piket_guru->update($arrdata, $tabel->id_pengaturan);
+						  $i=$i+1;
+					   }
+					  //$this->session->set_flashdata('aktif', "<script>alert(' berhasil diaktifkan!');</script>");
+					  redirect('kurikulum/jadwalpiketguru');
+						}
   }
+
+  
 

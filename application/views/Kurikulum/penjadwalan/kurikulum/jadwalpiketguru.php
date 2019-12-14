@@ -26,13 +26,40 @@
             
             <ul class="nav nav-tabs">
               <?php if($this->session->userdata('jabatan') != 'Guru') : ?>
-              <li  class="<?php if($this->session->userdata('jabatan') != 'Guru') : ?>active<?php endif ?>"><a href="#kelolajadwalpiket" data-toggle="tab" alt="test kursor">Kelola Jadwal Piket Guru</a></li>
+              <li  class="<?php if($this->session->userdata('jabatan') != 'Guru') : ?>active<?php endif ?>"><a href="#pengaturan" data-toggle="tab" alt="test kursor">Pengaturan</a></li>
+              <li><a href="#kelolajadwalpiket" data-toggle="tab" alt="test kursor">Kelola Jadwal Piket Guru</a></li>
               <?php endif ?>
               <li class="<?php if($this->session->userdata('jabatan') == 'Guru') : ?>active<?php endif ?>"><a href="#jadwalpiket" data-toggle="tab">Lihat Jadwal Piket Guru</a></li>
             </ul>
             
             <div class="tab-content">
-              <div class="formmapel" style="display: block;padding: 1.5em;margin-bottom: 1.5em;">
+              <div class="tab-pane <?php echo $this->session->flashdata('tab_loc') == null || $this->session->flashdata('tab_loc') == 1 ? 'active' : '' ?>" href="#tabpengaturan" id="pengaturan">
+                <h4><center><b>Pengaturan Hari</b></center></h4>
+                <h5><center><b>Pilihlah Hari Untuk Kelola Jam Belajar</b></center></h5><br>
+                <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" action="<?php echo site_url('kurikulum/savepengaturanjadwalpiketguru'); ?>">  
+                <?php
+                  $i=1;
+                  foreach ($tabel_pengaturan_hari as $tabel) 
+                  { 
+                    if ($i < 8) 
+                    {
+                      ?><input type="checkbox" class="flat" name="nilai<?php echo $tabel->id_pengaturan; ?>" value="1" <?php 
+                      if ($tabel->nilai == "1") 
+                        { echo " checked"; } ?>>
+                        <label><?php echo $tabel->atribut; ?></label><br> 
+                      <?php 
+                    }
+                  }
+                  ?>
+                    <br>
+                  <div class="modal-footer" align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Reset</button>
+                    <button type="Save" class="btn btn-success" onclick="return cek();">Aktifkan Hari</button>
+                  </div>    
+              </div>
+
+
+              <div class="formmapel" style="display: block;padding: 1.5em;margin-bottom: 1.5em;" id="default-setting">
                   <?php
                     if($this->session->userdata('jabatan') != 'Guru') :
                   ?>
@@ -73,7 +100,7 @@
 
               </div>
               <?php if($this->session->userdata('jabatan') != 'Guru') : ?>
-              <div class="<?php if($this->session->userdata('jabatan') != 'Guru') : ?>active<?php endif ?> tab-pane" id="kelolajadwalpiket">
+              <div class="tab-pane" id="kelolajadwalpiket">
                 <div class="box formmapel" style="padding: 0.5em;">
                  
                   <!-- /.box-header -->
@@ -85,108 +112,62 @@
                         <!-- <input type="text" name="id_tahun_ajaran" placeholder="periode"> -->
                       <tr>
                         <th class="tengah" rowspan="2">No.</th>
-                        <th>Senin</th>
-                        <th >Selasa</th>
-                        <th>Rabu</th>
-                        <th>Kamis</th>
-                        <th>Jumat</th>
-                        <th>Sabtu</th>
-                        <th>Minggu</th>
+                        <?php
+                        foreach ($tabel_pengaturan_hari as $row_hari) {
+                          if ($row_hari->nilai == 1) { ?>
+                            <th><?php echo $row_hari->atribut ?></th> <?php
+                          }
+                        }?>
                       </tr>
                       </thead>
                       <tbody>
                         <?php
-                        for ($i=1;$i<=7;$i++) {
-                        ?>
-                      <tr id="baris<?php echo $i; ?>" class="hidden_tampilan">
-                        <td class="fit"><?php echo $i; ?></td>
-                        <th>
-                          <select class="kodepiket form-control" name="NIP_senin<?php echo $i; ?>">
-                            <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
-                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_senin[$i-1]->NIP) { echo " selected"; } ?>><!-- <?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
+                        for ($i=1;$i<=7;$i++) { ?>
+                          <tr id="baris<?php echo $i; ?>" class="hidden_tampilan">
+                            <td class="fit"><?php echo $i; ?></td>
                             <?php
-                            }
-                            ?>
-                            </select>
-                        </th>
-                        <th>
-                          <select class="kodepiket form-control" name="NIP_selasa<?php echo $i; ?>">
-                              <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
-                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_selasa[$i-1]->NIP) { echo " selected"; } ?>><!-- ?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
-                            <?php
-                            }
-                            ?>
-                            </select>
-                        </th>
-                         <th>
-                          <select class="kodepiket form-control" name="NIP_rabu<?php echo $i; ?>">
-                            <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
+                              $no = 1;
+                              foreach ($tabel_pengaturan_hari as $row_hari) {
+                                if ($row_hari->nilai == 1) { ?>
+                                  <th>
+                                    <select class="kodepiket form-control" name="NIP_<?php echo $row_hari->nama_hari; ?><?php echo $i; ?>">
+                                      <option value=""><?php echo $row_hari->nama_hari ?></option>
 
-                            <option value="<?php echo $row_pegawai->NIP; ?>"  <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_rabu[$i-1]->NIP) { echo " selected"; } ?>><!-- <?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
-                            <?php
-                            }
+                                      <?php
+                                      foreach ($tabel_pegawai as $row_pegawai) {
+                                        switch ($no) {
+                                          case 1: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_senin[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          case 2: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_selasa[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          case 3: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_rabu[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          case 4: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_kamis[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          case 5: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_jumat[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          case 6: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_sabtu[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          case 7: ?>
+                                            <option value="<?php echo $row_pegawai->NIP; ?>" <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_minggu[$i-1]->NIP) { echo " selected"; } ?>><?php echo $row_pegawai->kode_guru; ?>. <?php echo $row_pegawai->nama_panggilan; ?></option><?php
+                                            break;
+                                          default:
+                                              null;
+                                        }
+                                      } ?>
+                                    </select>
+                                  </th> <?php
+                                  $no++;
+                                }
+                              }
                             ?>
-                            </select>
-                        </th>
-                         <th>
-                         <select class="kodepiket form-control" name="NIP_kamis<?php echo $i; ?>">
-                          <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
-                            <option value="<?php echo $row_pegawai->NIP; ?>"  <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_kamis[$i-1]->NIP) { echo " selected"; } ?>><!-- <?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
-                            <?php
-                            }
-                            ?>
-                            </select>
-                        </th>
-                        <th>
-                          <select class="kodepiket form-control" name="NIP_jumat<?php echo $i; ?>">
-                            <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
-                            <option value="<?php echo $row_pegawai->NIP; ?>"  <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_jumat[$i-1]->NIP) { echo " selected"; } ?>><!-- <?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
-                            <?php
-                            }
-                            ?>
-                            </select>
-                        </th>
-                         <th>
-                          <select class="kodepiket form-control" name="NIP_sabtu<?php echo $i; ?>">
-                            <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
-                            <option value="<?php echo $row_pegawai->NIP; ?>"  <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_sabtu[$i-1]->NIP) { echo " selected"; } ?>><!-- <?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
-                            <?php
-                            }
-                            ?>
-                            </select>
-                        </th>
-                         <th>
-                          <select class="kodepiket form-control" name="NIP_minggu<?php echo $i; ?>">
-                            <option value="">...</option>
-                              <?php
-                            foreach ($tabel_pegawai as $row_pegawai) {
-                            ?>
-                            <option value="<?php echo $row_pegawai->NIP; ?>"  <?php if ($row_pegawai->NIP == @$tabel_jadwalpiketguru_minggu[$i-1]->NIP) { echo " selected"; } ?>><!-- <?php echo $row_pegawai->kode_guru; ?>.  --><?php echo $row_pegawai->nama_panggilan; ?></option>
-                            <?php
-                            }
-                            ?>
-                            </select>
-                        </th>
-                      </tr>
-                       <?php
+                          </tr><?php
                         }
                        ?>
                       
@@ -311,5 +292,18 @@
       //   $("#get_tahunajaran").val(val_this);
       // });
       // console.log("test");
+
+    
+      $("#default-setting").css('display', 'none')
+      $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+          
+          var index = $(e.target).parent().index()
+          
+          if (index !== 0) {
+            $("#default-setting").css('display', 'block')
+          } else {
+            $("#default-setting").css('display', 'none')
+          }
+      })
     });
   </script>

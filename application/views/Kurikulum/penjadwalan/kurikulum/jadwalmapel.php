@@ -44,7 +44,7 @@
                   <div style="margin-top: 1em;margin-bottom: 2.5em;">
                     <blockquote>
                       <ul style="padding: 0em 1em;font-size: 0.8em;color: #f44336;">
-                        <li>Klik Pada Tombol Kelola Jadwal Priortias Jika Perlu.</li>
+                        <li>Klik Pada Tombol Kelola Jadwal Khusus Jika Perlu.</li>
                         <li>Jadwal Khusus yaitu guru yang tidak bisa mengajar atau mempunyai aktifitas rutin lain sehingga tidak bisa mengajar.</li>
                         <li>Pilih Mata Pelajaran, bisa lebih dari satu.</li>
                       </ul>
@@ -712,7 +712,7 @@
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="mapel">Mapel & Guru</label>
-                  <select data-placeholder="Pilih" class="kodeguru form-control" name="mapel" id="mapel">
+                   <select data-placeholder="Pilih" class="kodeguru form-control" name="mapel" id="mapel">
                     <option value="">Pilih Guru</option>
                     <?php 
                     foreach (@$tabel_jadwalprioritas_senin[$i] as $rowjadwalprioritas) {
@@ -724,7 +724,7 @@
                       }
                       if ($ada == false) {
                         ?>
-                        <option class="kuning" value="<?php echo $rowjadwalprioritas->NIP; ?>_<?php echo $rowjadwalprioritas->id_namamapel; ?>" <?php if ((@$tabel_jadwalmapel_senin[$row_kelasreguler->id_kelas_reguler][$i][0]->NIP == $rowjadwalprioritas->NIP) && (@$tabel_jadwalmapel_senin[$row_kelasreguler->id_kelas_reguler][$i][0]->id_namamapel == $rowjadwalprioritas->id_namamapel)) { echo " selected"; } ?>><?php echo $rowjadwalprioritas->Nama; ?>(<?php echo $rowjadwalprioritas->nama_panggilan; ?>)</option>
+                          <option class="kuning" value="<?php echo $rowjadwalprioritas->NIP; ?>_<?php echo $rowjadwalprioritas->id_namamapel; ?>" <?php if ((@$tabel_jadwalmapel_senin[$row_kelasreguler->id_kelas_reguler][$i][0]->NIP == $rowjadwalprioritas->NIP) && (@$tabel_jadwalmapel_senin[$row_kelasreguler->id_kelas_reguler][$i][0]->id_namamapel == $rowjadwalprioritas->id_namamapel)) { echo " selected"; } ?>><?php echo $rowjadwalprioritas->Nama; ?>(<?php echo $rowjadwalprioritas->nama_panggilan; ?>)</option>
                         <?php
                       }
                     }
